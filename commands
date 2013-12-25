@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+
+# Check if name is specified
+if [[ $1 == domains ]] || [[ $1 == domains:* ]]; then
+  if [[ -z $2 ]]; then
+    echo "You must specify an app name"
+    exit 1
+  else
+    APP="$2"
+    DOMAINS_FILE="$DOKKU_ROOT/$APP/DOMAINS"
+
+    # Check if app exists with the same name
+    if [ ! -d "$DOKKU_ROOT/$APP" ]; then
+      echo "App $APP does not exist"
+      exit 1
+    fi
+
+    [ -f $DOMAINS_FILE ] || {
+      echo "-----> Creating $DOMAINS_FILE"
+      touch $DOMAINS_FILE
+    }
+  fi
+fi
+
+case "$1" in
+
+  domains)
+      cat $DOMAINS_FILE
+    ;;
+
+  domains:set)
+      if [[ -z "${*:3}" ]]; then
+        echo "Usage: dokku domains:set APP DOMAIN1 [DOMAIN2 ...]"
+        echo "Must specify a DOMAIN."
+        exit 1
+      fi
+
+      domains="${*:3}"
+      echo "$domains" > $DOMAINS_FILE
+      
+      PORT=$(< "$DOKKU_ROOT/$APP/PORT")
+      pluginhook post-deploy $APP $PORT
+    ;;
+
+  help)
+    cat && cat<<EOF
+    domains <app>                                   display the domains for an app
+    domains:set <app> DOMAIN1 [DOMAIN2 ...]         set one or more domains
+EOF
+    ;;
+esac
