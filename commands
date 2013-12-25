@@ -38,9 +38,9 @@ case "$1" in
 
       domains="${*:3}"
       echo "$domains" > $DOMAINS_FILE
-      
+
       PORT=$(< "$DOKKU_ROOT/$APP/PORT")
-      pluginhook post-deploy $APP $PORT
+      pluginhook deploy $APP
     ;;
 
   help)
