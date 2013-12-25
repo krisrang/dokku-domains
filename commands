@@ -40,7 +40,7 @@ case "$1" in
       echo "$domains" > $DOMAINS_FILE
 
       PORT=$(< "$DOKKU_ROOT/$APP/PORT")
-      pluginhook deploy $APP
+      dokku deploy $APP
     ;;
 
   help)
