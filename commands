@@ -1,52 +1,40 @@
-#!/usr/bin/env bash
-set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+#!/usr/bin/env ruby
+require 'pathname'
+require 'fileutils'
 
-# Check if name is specified
-if [[ $1 == domains ]] || [[ $1 == domains:* ]]; then
-  if [[ -z $2 ]]; then
-    echo "You must specify an app name"
-    exit 1
-  else
-    APP="$2"
-    DOMAINS_FILE="$DOKKU_ROOT/$APP/DOMAINS"
+cmd, app = ARGV
+root = ENV['DOKKU_ROOT']
+approot = File.join(root, app)
+domainfile = File.join(approot, 'DOMAINS')
 
-    # Check if app exists with the same name
-    if [ ! -d "$DOKKU_ROOT/$APP" ]; then
-      echo "App $APP does not exist"
-      exit 1
-    fi
+def fail(message)
+  puts message
+  exit 1
+end
 
-    [ -f $DOMAINS_FILE ] || {
-      echo "-----> Creating $DOMAINS_FILE"
-      touch $DOMAINS_FILE
-    }
-  fi
-fi
+if cmd && cmd.start_with?("domains")
+  fail "You must specify an app name" if app.nil? || app.strip.empty?
+  fail "App #{app} does not exist" if !Dir.exist?(approot)
 
-case "$1" in
+  if !File.exist?(domainfile)
+    puts "-----> Creating #{domainfile}"
+    FileUtils.touch(domainfile)
+  end
+end
 
-  domains)
-      cat $DOMAINS_FILE
-    ;;
+case cmd
+when 'domains'
+  puts File.read(domainfile)
+when 'domains:set'
+  newdomains = ARGV[2..-1]
+  fail "Usage: dokku domains:set APP DOMAIN1 [DOMAIN2 ...]\nMust specify a DOMAIN." if newdomains.empty?
 
-  domains:set)
-      if [[ -z "${*:3}" ]]; then
-        echo "Usage: dokku domains:set APP DOMAIN1 [DOMAIN2 ...]"
-        echo "Must specify a DOMAIN."
-        exit 1
-      fi
-
-      domains="${*:3}"
-      echo "$domains" > $DOMAINS_FILE
-
-      PORT=$(< "$DOKKU_ROOT/$APP/PORT")
-      dokku deploy $APP
-    ;;
-
-  help)
-    cat && cat<<EOF
+  File.open(domainfile, 'w') { |file| file.write(newdomains.join(" ")) }
+  system "dokku deploy #{app}"
+when 'help'
+  puts STDIN.read
+  puts <<-EOF
     domains <app>                                   display the domains for an app
     domains:set <app> DOMAIN1 [DOMAIN2 ...]         set one or more domains
-EOF
-    ;;
-esac
+  EOF
+end
