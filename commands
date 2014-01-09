@@ -32,7 +32,8 @@ when 'domains:set'
   fail "Usage: dokku domains:set APP DOMAIN1 [DOMAIN2 ...]\nMust specify a DOMAIN." if newdomains.empty?
 
   File.open(domainfile, 'w') { |file| file.write(newdomains.join(" ")) }
-  system "dokku deploy #{app}"
+  puts "-----> Setting #{app} domains to: #{newdomains.join(" ")}"
+  system "sudo /etc/init.d/nginx reload"
 when 'help'
   puts STDIN.read
   puts <<-EOF
