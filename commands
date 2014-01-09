@@ -4,8 +4,6 @@ require 'fileutils'
 
 cmd, app = ARGV
 root = ENV['DOKKU_ROOT']
-approot = File.join(root, app)
-domainfile = File.join(approot, 'DOMAINS')
 
 def fail(message)
   puts message
@@ -15,6 +13,9 @@ end
 if cmd && cmd.start_with?("domains")
   fail "You must specify an app name" if app.nil? || app.strip.empty?
   fail "App #{app} does not exist" if !Dir.exist?(approot)
+
+  approot = File.join(root, app)
+  domainfile = File.join(approot, 'DOMAINS')
 
   if !File.exist?(domainfile)
     puts "-----> Creating #{domainfile}"
