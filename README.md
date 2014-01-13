@@ -1,10 +1,14 @@
 Dokku domains plugin
 =====
 
+[![Build Status](https://travis-ci.org/krisrang/dokku-domains.png?branch=master)](https://travis-ci.org/krisrang/dokku-domains)
+
 [Dokku](https://github.com/progrium/dokku) plugin to set custom domains for dokku apps.
 
 Installation
 -----
+
+* Requires Ruby >= 1.9.3 present on the host
 
 ```bash
 git clone https://github.com/krisrang/dokku-domains.git /var/lib/dokku/plugins/domains
@@ -22,12 +26,14 @@ $ dokku help
 Sample usage
 -----
 
-Add extra domains for superapp.com:
+Add extra domains for superapp:
 
 ```bash
-$ dokku domains:set superapp.com www.superapp.com ssl.superapp.com
------> Setting superapp.com domains to: www.superapp.com ssl.superapp.com
+$ dokku domains:set superapp www.superapp.com ssl.superapp.com
+-----> Setting superapp domains to: www.superapp.com ssl.superapp.com
 ```
+
+Now superapp will respond to superapp.HOST, www.superapp.com and ssl.superapp.com
 
 TODO
 -----

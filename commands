@@ -10,6 +10,10 @@ def fail(message)
   exit 1
 end
 
+def notice(message)
+  puts "-----> #{message}"
+end
+
 if cmd && cmd.start_with?("domains")
   fail "You must specify an app name" if app.nil? || app.strip.empty?
   
@@ -19,23 +23,24 @@ if cmd && cmd.start_with?("domains")
   fail "App #{app} does not exist" if !Dir.exist?(approot)
 
   if !File.exist?(domainfile)
-    puts "-----> Creating #{domainfile}"
+    notice "Creating #{domainfile}"
     FileUtils.touch(domainfile)
   end
 end
 
 case cmd
 when 'domains'
+  notice "Domains for #{app}"
   puts File.read(domainfile)
 when 'domains:set'
   newdomains = ARGV[2..-1]
   fail "Usage: dokku domains:set APP DOMAIN1 [DOMAIN2 ...]\nMust specify a DOMAIN." if newdomains.empty?
 
   File.open(domainfile, 'w') { |file| file.write(newdomains.join(" ")) }
-  puts "-----> Setting #{app} domains to: #{newdomains.join(" ")}"
+  notice "Setting #{app} domains to: #{newdomains.join(" ")}"
   system "sudo /etc/init.d/nginx reload"
 when 'help'
-  puts STDIN.read
+  puts STDIN.read unless STDIN.tty?
   puts <<-EOF
     domains <app>                                   display the domains for an app
     domains:set <app> DOMAIN1 [DOMAIN2 ...]         set one or more domains

@@ -1,2 +1,3 @@
 test/*/DOMAINS
 test/*/nginx.conf
+/.bundle
