@@ -1,7 +1,7 @@
+[![Build Status](https://travis-ci.org/krisrang/dokku-domains.png?branch=master)](https://travis-ci.org/krisrang/dokku-domains)
+
 Dokku domains plugin
 =====
-
-[![Build Status](https://travis-ci.org/krisrang/dokku-domains.png?branch=master)](https://travis-ci.org/krisrang/dokku-domains)
 
 [Dokku](https://github.com/progrium/dokku) plugin to set custom domains for dokku apps.
 
