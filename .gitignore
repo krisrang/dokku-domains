@@ -1,3 +1,4 @@
-test/*/DOMAINS
-test/*/nginx.conf
+test/apps/*/DOMAINS
+test/apps/*/nginx.conf
+test/apps/*/URL
 /.bundle

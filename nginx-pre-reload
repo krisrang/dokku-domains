@@ -5,10 +5,6 @@ require 'pathname'
 app = ARGV[0]
 root = ENV['DOKKU_ROOT']
 
-def write(filename, text)
-  File.open(File.join(root, app, filename), 'w') { |file| file.write(text) }
-end
-
 hostname = File.read(File.join(root, app, 'DOMAINS'))
 port = File.read(File.join(root, app, 'PORT'))
 ssl = File.join(root, app, 'ssl')
@@ -16,8 +12,8 @@ use_ssl = File.exists?(File.join(ssl, 'server.crt')) && File.exists?(File.join(s
 
 # write app/nginx.conf
 template = File.open(File.join(Pathname.new(__FILE__).dirname, 'nginx.conf.erb'), 'rb').read
-write('nginx.conf', ERB.new(template).result)
+File.open(File.join(root, app, 'nginx.conf'), 'w') { |file| file.write(ERB.new(template).result) }
 
 # write app/URL
 url = "#{use_ssl ? 'https' : 'http'}://#{hostname.split(" ")[0]}"
-write('URL', url)
+File.open(File.join(root, app, 'URL'), 'w') { |file| file.write(url) }
