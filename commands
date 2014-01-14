@@ -38,6 +38,7 @@ when 'domains:set'
 
   File.open(domainfile, 'w') { |file| file.write(newdomains.join(" ")) }
   notice "Setting #{app} domains to: #{newdomains.join(" ")}"
+  system "#{File.join(Pathname.new(__FILE__).dirname, 'nginx-pre-reload')} #{app}"
   system "sudo /etc/init.d/nginx reload"
 when 'help'
   puts STDIN.read unless STDIN.tty?
