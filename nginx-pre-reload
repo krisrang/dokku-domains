@@ -8,8 +8,8 @@ domainspath = File.join(root, app, 'DOMAINS')
 
 exit unless File.exists?(domainspath)
 
-hostname = File.read(domainspath)
-port = File.read(File.join(root, app, 'PORT'))
+hostname = File.read(domainspath).strip
+port = File.read(File.join(root, app, 'PORT')).strip
 ssl = File.join(root, app, 'ssl')
 use_ssl = File.exists?(File.join(ssl, 'server.crt')) && File.exists?(File.join(ssl, 'server.key'))
 
