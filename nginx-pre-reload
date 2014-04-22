@@ -12,7 +12,7 @@ exit unless File.exists?(domainspath)
 vhost = File.read(vhostpath).strip
 hostname = "#{app.sub('/','-')}.#{vhost} " + File.read(domainspath).strip
 port = File.read(File.join(root, app, 'PORT')).strip
-ssl = File.join(root, app, 'ssl')
+ssl = File.exists?(File.join(root, app, 'ssl')) ? File.join(root, app, 'ssl') : File.join(root, app, 'tls')
 use_ssl = File.exists?(File.join(ssl, 'server.crt')) && File.exists?(File.join(ssl, 'server.key'))
 
 # write app/nginx.conf
