@@ -3,6 +3,8 @@
 Dokku domains plugin
 =====
 
+**Deprecated: dokku >= 0.3.10 already has this functionality built in**
+
 [Dokku](https://github.com/progrium/dokku) plugin to set custom domains for dokku apps.
 
 Installation
